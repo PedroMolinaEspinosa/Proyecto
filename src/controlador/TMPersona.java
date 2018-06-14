@@ -9,6 +9,12 @@ import modelo.DTO.PersonaDTO;
 
 public class TMPersona extends AbstractTableModel {
 
+	@Override
+	public void setValueAt(Object aVvalue, int rowIndex, int columnIndex) {
+
+		// super.setValueAt(arg0, arg1, arg2);
+	}
+
 	PersonaDAOImplementada dao = new PersonaDAOImplementada();
 	List<PersonaDTO> listaPersonas;
 	String[] titulos;
@@ -43,4 +49,5 @@ public class TMPersona extends AbstractTableModel {
 		// TODO Auto-generated method stub
 		return data[rowIndex][columnIndex];
 	}
+
 }

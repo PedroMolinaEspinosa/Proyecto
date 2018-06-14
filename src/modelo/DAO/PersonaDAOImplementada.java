@@ -17,9 +17,11 @@ import java.util.List;
 import controlador.Conexion;
 import modelo.DTO.Logs;
 import modelo.DTO.PersonaDTO;
+import vista.View;
 
 public class PersonaDAOImplementada implements PersonaDAO {
 	private Connection conexion = Conexion.getConexion();
+	View vista;
 
 	@Override
 	public List<PersonaDTO> listarTodasLasPersonas() {
@@ -86,8 +88,8 @@ public class PersonaDAOImplementada implements PersonaDAO {
 	public boolean insertarPersona(PersonaDTO persona) {
 		int resultado = 0;
 
-		System.out.println(persona.toString());
 		String sql = "INSERT INTO persona VALUES (?,?,?,?,?)";
+
 		try (PreparedStatement psStatement = conexion.prepareStatement(sql);) {
 
 			psStatement.setInt(1, persona.getId());
@@ -96,11 +98,12 @@ public class PersonaDAOImplementada implements PersonaDAO {
 			psStatement.setString(4, persona.getEmail());
 			psStatement.setString(5, persona.getGenero());
 			resultado = psStatement.executeUpdate();
-			Logs.crearLog("OPERACIÓN CRUD: 'Ha sido insertado un registro con el id' " + persona.getId()
-					+ " --------- FECHA: " + LocalDate.now());
+
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error al introducir datos");
+			// JOptionPane.showMessageDialog(vista.getFrame(), "El id de
+			// inserción ya está en la base de datos",
+			// "Error",JOptionPane.ERROR_MESSAGE);
+
 		}
 		return resultado == 1;
 
@@ -111,6 +114,8 @@ public class PersonaDAOImplementada implements PersonaDAO {
 		for (PersonaDTO personaDTO : listaPersonas) {
 			insertarPersona(personaDTO);
 		}
+		Logs.crearLog(
+				"OPERACIÓN CRUD: 'Ha sido insertada una lista de personas' " + " --------- FECHA: " + LocalDate.now());
 		return false;
 	}
 

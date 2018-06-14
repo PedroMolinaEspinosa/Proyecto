@@ -6,13 +6,19 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 
 import modelo.DAO.PersonaDAOImplementada;
+import modelo.DTO.Logs;
 import modelo.DTO.PersonaDTO;
 import vista.View;
 
@@ -24,6 +30,8 @@ public class Controlador implements ActionListener {
 	private String path;
 	private int contador = 0;
 	static Object[][] data;
+	JDialog emergente;
+	JLabel etiqueta;
 	static String[] titulos = new String[] { "Id", "Nombre", "Apellidos", "Email", "genero" };
 	TMPersona tmpersona;
 	JTable table;
@@ -41,6 +49,8 @@ public class Controlador implements ActionListener {
 
 	private void actionListener(ActionListener escuchador) {
 		vista1.getMntmCargarCsv().addActionListener(escuchador);
+		vista1.getBtnInsertar().addActionListener(escuchador);
+		vista1.getBtnBorrar().addActionListener(escuchador);
 
 		/*
 		 * vista.getBtnAgregar().addActionListener(escuchador);
@@ -68,6 +78,7 @@ public class Controlador implements ActionListener {
 				ResultSet rs = st.executeQuery(sql);
 				if (rs.next()) {
 					System.out.println("Ya hay datos en la BD");
+					System.out.println(dao.listarTodasLasPersonas().size());
 					cargarModeloDePersonas(dao.listarTodasLasPersonas());
 
 				} else {
@@ -85,7 +96,7 @@ public class Controlador implements ActionListener {
 				vista1.getTextFieldNombre().setEnabled(true);
 				vista1.getTextFieldEmail().setEnabled(true);
 				vista1.getBtnBorrar().setEnabled(true);
-
+				cargarFormulario();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -129,7 +140,29 @@ public class Controlador implements ActionListener {
 		tmpersona = new TMPersona(titulos, data);
 		table = new JTable(tmpersona);
 		vista1.getScrollPane().setViewportView(table);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
 
+	public void cargarSeleccionEnFormulario() {
+
+	}
+
+	public void cargarFormulario() {
+		String id = data[0][0] + "";
+		String nombre = (String) data[0][1];
+		String apellidos = (String) data[0][2];
+		String email = (String) data[0][3];
+		String genero = (String) data[0][4];
+		vista1.getTextFieldId().setText(id);
+		vista1.getTextFieldNombre().setText(nombre);
+		vista1.getTextFieldApellidos().setText(apellidos);
+		vista1.getTextFieldEmail().setText(email);
+
+		if (genero == "Male") {
+
+			vista1.getRdbtnHombre().setSelected(true);
+		} else
+			vista1.getRdbtnMujer().setSelected(true);
 	}
 
 	/*
@@ -140,12 +173,20 @@ public class Controlador implements ActionListener {
 	 * 
 	 * 
 	 * 
-	 * */
+	*/
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getActionCommand().equals("cargar CSV")) {
 			lanzarEleccionFichero();
+
+		}
+		if (e.getActionCommand().equals("Insertar")) {
+			insertarPersona();
+
+		}
+		if (e.getActionCommand().equals("Borrar")) {
+			borrarPersona();
 
 		}
 
@@ -178,5 +219,111 @@ public class Controlador implements ActionListener {
 			}
 
 		}
+	}
+
+	private void borrarPersona() {
+		int id = Integer.parseInt(vista1.getTextFieldId().getText());
+		dao.borrarPersona(id);
+		cargarModeloDePersonas(dao.listarTodasLasPersonas());
+		setTabla();
+
+	}
+
+	private void insertarPersona() {
+
+		String id = "";
+		String nombre = "";
+		String apellidos = "";
+		String email = "";
+		String genero = "";
+		PersonaDTO persona = null;
+
+		// Configurando inserción de Id
+		if (vista1.getTextFieldId().getText().isEmpty() || !vista1.getTextFieldId().getText().matches("\\d{1,4}")) {
+			JOptionPane.showMessageDialog(vista1.getFrame(), "El id debe ser un número de 1 a 4 dígitos", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			/*
+			 * emergente = new JDialog(vista1.getFrame(), "Fallo de Id");
+			 * 
+			 * etiqueta = new
+			 * JLabel("Debes rellenar el Campo del Id con, de uno a cuatro dígitos numéricos"
+			 * );
+			 * 
+			 * emergente.getContentPane().add(etiqueta);
+			 * emergente.getContentPane().add(botonAceptar); emergente.pack();
+			 * emergente.setLocation(400, 600); emergente.setVisible(true);
+			 * botonAceptar.addActionListener(new ActionListener() { public void
+			 * actionPerformed(ActionEvent e) { emergente.setVisible(false);
+			 * emergente.dispose(); } });
+			 */
+		} else
+			id = vista1.getTextFieldId().getText();
+
+		// Configurando inserción de Nombre
+		if (vista1.getTextFieldNombre().getText().isEmpty()
+				|| !vista1.getTextFieldNombre().getText().matches("\\w{2,20}")) {
+			JOptionPane.showMessageDialog(vista1.getFrame(), "El nombre debe ser tipo texto y de 2 a 20 caracteres",
+					"Error", JOptionPane.ERROR_MESSAGE);
+
+		} else
+			nombre = vista1.getTextFieldNombre().getText();
+
+		// Configurando inserción de Apellidos
+		if (vista1.getTextFieldApellidos().getText().isEmpty()
+				|| !vista1.getTextFieldApellidos().getText().matches("\\w{2,30}")) {
+			JOptionPane.showMessageDialog(vista1.getFrame(),
+					"Los apellidos deben ser tipo texto y de 2 a 30 caracteres", "Error", JOptionPane.ERROR_MESSAGE);
+
+		} else
+			apellidos = vista1.getTextFieldApellidos().getText();
+
+		// Configurando inserción de Email
+		if (vista1.getTextFieldEmail().getText().isEmpty() || !vista1.getTextFieldEmail().getText().matches(
+				"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")) {
+			JOptionPane.showMessageDialog(vista1.getFrame(),
+					"El email no está bien formado; Ejemplo: \n" + "info@iesvirgendelcarmen.com", "Error",
+					JOptionPane.ERROR_MESSAGE);
+
+		} else
+			email = vista1.getTextFieldEmail().getText();
+
+		// Configurando inserción de Genero
+		if (!vista1.getRdbtnHombre().isEnabled() && !vista1.getRdbtnMujer().isEnabled()) {
+			JOptionPane.showMessageDialog(vista1.getFrame(), "Debes marcar una de las dos opciones de sexo", "Error",
+					JOptionPane.ERROR_MESSAGE);
+
+		} else if (vista1.getRdbtnHombre().isEnabled()) {
+			genero = "Male";
+		} else
+			genero = "Female";
+
+		try {
+			if (!(vista1.getTextFieldId().getText().isEmpty() || !vista1.getTextFieldId().getText().matches("\\d{1,4}")
+					|| vista1.getTextFieldNombre().getText().isEmpty()
+					|| !vista1.getTextFieldNombre().getText().matches("\\w{2,20}")
+					|| vista1.getTextFieldApellidos().getText().isEmpty()
+					|| !vista1.getTextFieldApellidos().getText().matches("\\w{2,30}")
+					|| vista1.getTextFieldEmail().getText().isEmpty()
+					|| !vista1.getTextFieldEmail().getText()
+							.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+									+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+					|| !vista1.getRdbtnHombre().isEnabled() && !vista1.getRdbtnMujer().isEnabled())) {
+				persona = new PersonaDTO(Integer.parseInt(id), nombre, apellidos, email, genero);
+				System.out.println(persona);
+			} else {
+				System.out.println("No se ha podido insertar un carajo");
+				System.out.println(persona);
+
+			}
+			dao.insertarPersona(persona);
+			cargarModeloDePersonas(dao.listarTodasLasPersonas());
+			setTabla();
+			Logs.crearLog("OPERACIÓN CRUD: 'Ha sido insertado un registro con el id' " + persona.getId()
+					+ " --------- FECHA: " + LocalDate.now());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(vista1.getFrame(), "No se ha añadido nada", "Advertencia",
+					JOptionPane.WARNING_MESSAGE);
+		}
+
 	}
 }

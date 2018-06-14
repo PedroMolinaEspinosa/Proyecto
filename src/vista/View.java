@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -135,6 +136,7 @@ public class View {
 		frame.setBounds(100, 100, 818, 656);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Personitas");
+		frame.setIconImage(new ImageIcon("Images/Diamond_Sword_25716.png").getImage());
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(100, 100, 400, 400);
 
