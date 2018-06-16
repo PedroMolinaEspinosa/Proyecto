@@ -21,7 +21,7 @@ import controlador.Controlador;
 
 public class View {
 
-	private JFrame frame;
+	private JFrame frmBaseDeDatos;
 	private JScrollPane scrollPane;
 	private JMenuItem mntmCargarCsv;
 	private JTextField textFieldId;
@@ -32,6 +32,10 @@ public class View {
 	private JButton btnInsertar;
 	private JRadioButton rdbtnHombre;
 	private JRadioButton rdbtnMujer;
+	private JButton btnPrimero;
+	private JButton buttonMenos;
+	private JButton buttonMas;
+	private JButton btnUltimo;
 
 	// --------------------------------------GETTERS Y
 	// SETTERS--------------------------------------------------------------
@@ -101,7 +105,7 @@ public class View {
 	}
 
 	public void setFrame(JFrame frame) {
-		this.frame = frame;
+		this.frmBaseDeDatos = frame;
 	}
 
 	/**
@@ -113,7 +117,7 @@ public class View {
 				try {
 					View window = new View();
 					new Controlador(window);
-					window.frame.setVisible(true);
+					window.frmBaseDeDatos.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -132,11 +136,11 @@ public class View {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 818, 656);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("Personitas");
-		frame.setIconImage(new ImageIcon("Images/Diamond_Sword_25716.png").getImage());
+		frmBaseDeDatos = new JFrame();
+		frmBaseDeDatos.setBounds(100, 100, 818, 656);
+		frmBaseDeDatos.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmBaseDeDatos.setTitle("Base de datos de Personas");
+		frmBaseDeDatos.setIconImage(new ImageIcon("Images/dino.png").getImage());
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(100, 100, 400, 400);
 
@@ -165,6 +169,7 @@ public class View {
 		textFieldEmail.setColumns(10);
 		ButtonGroup btGroup = new ButtonGroup();
 		rdbtnHombre = new JRadioButton("Hombre");
+		rdbtnHombre.setSelected(true);
 		rdbtnHombre.setEnabled(false);
 
 		rdbtnMujer = new JRadioButton("Mujer");
@@ -177,29 +182,52 @@ public class View {
 
 		btnBorrar = new JButton("Borrar");
 		btnBorrar.setEnabled(false);
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
+
+		btnPrimero = new JButton("Primero");
+		btnPrimero.setEnabled(false);
+
+		buttonMenos = new JButton("<");
+		buttonMenos.setEnabled(false);
+
+		buttonMas = new JButton(">");
+		buttonMas.setEnabled(false);
+
+		btnUltimo = new JButton("Ultimo");
+		btnUltimo.setEnabled(false);
+		GroupLayout groupLayout = new GroupLayout(frmBaseDeDatos.getContentPane());
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addContainerGap()
-				.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 429, GroupLayout.PREFERRED_SIZE)
+				.createSequentialGroup().addContainerGap().addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 429,
+						GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-						.createSequentialGroup().addGap(18)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(lblId)
-								.addComponent(lblNewLabel).addComponent(lblApellidos).addComponent(lblEmail))
-						.addGap(46)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addComponent(btnBorrar)
-										.addComponent(textFieldEmail, GroupLayout.PREFERRED_SIZE, 202,
-												GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-										.addComponent(textFieldApellidos, Alignment.LEADING)
-										.addComponent(textFieldNombre, Alignment.LEADING).addComponent(textFieldId,
-												Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE))))
+				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup().addGap(60)
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(btnInsertar)
 										.addGroup(groupLayout.createSequentialGroup().addComponent(rdbtnHombre)
-												.addGap(35).addComponent(rdbtnMujer)))))
-				.addContainerGap(55, Short.MAX_VALUE)));
+												.addGap(35).addComponent(rdbtnMujer))))
+						.addGroup(groupLayout.createSequentialGroup().addGap(18)
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+												.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+														.addComponent(lblId).addComponent(lblNewLabel)
+														.addComponent(lblApellidos).addComponent(lblEmail))
+												.addGap(46)
+												.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+														.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+																.addComponent(btnBorrar).addComponent(
+																		textFieldEmail, GroupLayout.PREFERRED_SIZE,
+																		202, GroupLayout.PREFERRED_SIZE))
+														.addGroup(groupLayout
+																.createParallelGroup(Alignment.TRAILING, false)
+																.addComponent(textFieldApellidos, Alignment.LEADING)
+																.addComponent(textFieldNombre, Alignment.LEADING)
+																.addComponent(textFieldId, Alignment.LEADING,
+																		GroupLayout.DEFAULT_SIZE, 114,
+																		Short.MAX_VALUE))))
+										.addGroup(
+												groupLayout.createSequentialGroup().addGap(16).addComponent(btnPrimero)
+														.addGap(26).addComponent(buttonMenos).addGap(30)
+														.addComponent(buttonMas).addGap(27).addComponent(btnUltimo)))))
+				.addContainerGap(34, Short.MAX_VALUE)));
 		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
 				.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
@@ -222,22 +250,57 @@ public class View {
 						.addGap(36)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(rdbtnHombre)
 								.addComponent(rdbtnMujer))
-						.addGap(83)
+						.addGap(32)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnPrimero)
+								.addComponent(buttonMenos).addComponent(buttonMas).addComponent(btnUltimo))
+						.addGap(28)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnInsertar)
 								.addComponent(btnBorrar)))
 						.addGroup(groupLayout.createSequentialGroup().addContainerGap().addComponent(scrollPane,
 								GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)))
 				.addContainerGap()));
-		frame.getContentPane().setLayout(groupLayout);
+		frmBaseDeDatos.getContentPane().setLayout(groupLayout);
 
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		frmBaseDeDatos.setJMenuBar(menuBar);
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
 		mntmCargarCsv = new JMenuItem("cargar CSV");
 		mnFile.add(mntmCargarCsv);
+	}
+
+	public JButton getBtnPrimero() {
+		return btnPrimero;
+	}
+
+	public void setBtnPrimero(JButton btnPrimero) {
+		this.btnPrimero = btnPrimero;
+	}
+
+	public JButton getButtonMenos() {
+		return buttonMenos;
+	}
+
+	public void setButtonMenos(JButton buttonMenos) {
+		this.buttonMenos = buttonMenos;
+	}
+
+	public JButton getButtonMas() {
+		return buttonMas;
+	}
+
+	public void setButtonMas(JButton buttonMas) {
+		this.buttonMas = buttonMas;
+	}
+
+	public JButton getBtnUltimo() {
+		return btnUltimo;
+	}
+
+	public void setBtnUltimo(JButton btnUltimo) {
+		this.btnUltimo = btnUltimo;
 	}
 
 	public JMenuItem getMntmCargarCsv() {
@@ -249,7 +312,7 @@ public class View {
 	}
 
 	public JFrame getFrame() {
-		return frame;
+		return frmBaseDeDatos;
 	}
 
 	public void setScrollPane(JScrollPane scrollPane) {

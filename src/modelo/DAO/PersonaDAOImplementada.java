@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import controlador.Conexion;
 import modelo.DTO.Logs;
 import modelo.DTO.PersonaDTO;
@@ -27,7 +29,7 @@ public class PersonaDAOImplementada implements PersonaDAO {
 	public List<PersonaDTO> listarTodasLasPersonas() {
 		List<PersonaDTO> listaPersonas = new ArrayList<>();
 		// Crear objeto Statement
-		String sql = "SELECT * FROM persona;";
+		String sql = "SELECT * FROM persona ORDER BY id;";
 		try (Statement statement = conexion.createStatement();) {
 			// Crear objeto ResultSet
 			ResultSet resulset = statement.executeQuery(sql);
@@ -35,10 +37,9 @@ public class PersonaDAOImplementada implements PersonaDAO {
 				PersonaDTO persona = new PersonaDTO(resulset.getInt(1), resulset.getString(2), resulset.getString(3),
 						resulset.getString(4), resulset.getString(5));
 				listaPersonas.add(persona);
-				Logs.crearLog(
-						"OPERACIÓN CRUD: 'Han sido listadas todas las personas' --------- FECHA: " + LocalDate.now());
-			}
 
+			}
+			Logs.crearLog("OPERACIÓN CRUD: 'Han sido listadas todas las personas' --------- FECHA: " + LocalDate.now());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,9 +101,8 @@ public class PersonaDAOImplementada implements PersonaDAO {
 			resultado = psStatement.executeUpdate();
 
 		} catch (SQLException e) {
-			// JOptionPane.showMessageDialog(vista.getFrame(), "El id de
-			// inserción ya está en la base de datos",
-			// "Error",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(vista.getFrame(), "El id de inserción ya está en la base de datos", "Error",
+					JOptionPane.ERROR_MESSAGE);
 
 		}
 		return resultado == 1;

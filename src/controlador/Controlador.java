@@ -35,6 +35,7 @@ public class Controlador implements ActionListener {
 	static String[] titulos = new String[] { "Id", "Nombre", "Apellidos", "Email", "genero" };
 	TMPersona tmpersona;
 	JTable table;
+
 	private Connection conexion = Conexion.getConexion();
 
 	public Controlador(View view) {
@@ -51,6 +52,10 @@ public class Controlador implements ActionListener {
 		vista1.getMntmCargarCsv().addActionListener(escuchador);
 		vista1.getBtnInsertar().addActionListener(escuchador);
 		vista1.getBtnBorrar().addActionListener(escuchador);
+		vista1.getBtnPrimero().addActionListener(escuchador);
+		vista1.getButtonMenos().addActionListener(escuchador);
+		vista1.getButtonMas().addActionListener(escuchador);
+		vista1.getBtnUltimo().addActionListener(escuchador);
 
 		/*
 		 * vista.getBtnAgregar().addActionListener(escuchador);
@@ -63,6 +68,22 @@ public class Controlador implements ActionListener {
 		 * vista.getRdbtnMujer().addActionListener(escuchador);
 		 * vista.getBtnActualizarEmail().addActionListener(escuchador);
 		 */
+	}
+
+	@SuppressWarnings("unused")
+	private void jTable1MouseClicked(java.awt.event.MouseEvent e) {
+		int index = table.getSelectedRow();
+		System.out.println("Utilizando método del click");
+
+		vista1.getTextFieldId().setText(tmpersona.getValueAt(index, 0).toString());
+		vista1.getTextFieldNombre().setText(tmpersona.getValueAt(index, 1).toString());
+		vista1.getTextFieldApellidos().setText(tmpersona.getValueAt(index, 2).toString());
+		vista1.getTextFieldEmail().setText(tmpersona.getValueAt(index, 3).toString());
+		if (tmpersona.getValueAt(index, 4).toString() == "Male") {
+			vista1.getRdbtnHombre().setEnabled(true);
+		} else
+			vista1.getRdbtnMujer().setEnabled(true);
+
 	}
 
 	private void lanzarEleccionFichero() {
@@ -89,13 +110,23 @@ public class Controlador implements ActionListener {
 				}
 				setTabla();
 				vista1.getBtnInsertar().setEnabled(true);
-				vista1.getRdbtnHombre().setEnabled(true);
+
 				vista1.getRdbtnMujer().setEnabled(true);
+				vista1.getRdbtnHombre().setEnabled(true);
+				vista1.getRdbtnHombre().setSelected(true);
+				;
 				vista1.getTextFieldApellidos().setEnabled(true);
 				vista1.getTextFieldId().setEnabled(true);
 				vista1.getTextFieldNombre().setEnabled(true);
 				vista1.getTextFieldEmail().setEnabled(true);
 				vista1.getBtnBorrar().setEnabled(true);
+				vista1.getBtnPrimero().setEnabled(true);
+				vista1.getButtonMenos().setEnabled(true);
+				vista1.getButtonMas().setEnabled(true);
+				vista1.getBtnUltimo().setEnabled(true);
+
+				vista1.getMntmCargarCsv().setEnabled(false);
+				limpiarFormulario();
 				cargarFormulario();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -139,12 +170,9 @@ public class Controlador implements ActionListener {
 	public void setTabla() {
 		tmpersona = new TMPersona(titulos, data);
 		table = new JTable(tmpersona);
+
 		vista1.getScrollPane().setViewportView(table);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	}
-
-	public void cargarSeleccionEnFormulario() {
-
 	}
 
 	public void cargarFormulario() {
@@ -153,16 +181,22 @@ public class Controlador implements ActionListener {
 		String apellidos = (String) data[0][2];
 		String email = (String) data[0][3];
 		String genero = (String) data[0][4];
+
 		vista1.getTextFieldId().setText(id);
 		vista1.getTextFieldNombre().setText(nombre);
 		vista1.getTextFieldApellidos().setText(apellidos);
 		vista1.getTextFieldEmail().setText(email);
-
-		if (genero == "Male") {
+		System.out.println((String) data[0][4]);
+		System.out.println(genero + " Antes del if y else");
+		if (genero.equals("Male")) {
+			System.out.println(genero + " Dentro del if");
 
 			vista1.getRdbtnHombre().setSelected(true);
-		} else
+		} else {
+
 			vista1.getRdbtnMujer().setSelected(true);
+			System.out.println(genero + " Dentro del else");
+		}
 	}
 
 	/*
@@ -193,26 +227,47 @@ public class Controlador implements ActionListener {
 		if (e.getSource().getClass() == JButton.class) {
 			JButton jButton = (JButton) e.getSource();
 			String textoBoton = jButton.getText();
+
+			if (vista1.getTextFieldId().getText().matches("\\d{1,4}")) {
+				contador = buscarPosicionEnArray();
+				// System.out.println(contador);
+				// System.out.println("Ha cogido el contador del formulario " +
+				// contador);
+			} else
+				contador = 0;
+
 			switch (textoBoton) {
 			case ">":
 				System.out.println("pulsado " + textoBoton);
-				contador++;
+				if (contador < data.length - 1)
+					contador++;
+				// System.out.println(contador);
+				// System.out.println(data.length);
+				funcionalidadBotones(contador);
+
 				// colocarFormularioPersona(contador);
 				break;
 			case "Ultimo":
 				System.out.println("pulsado " + textoBoton);
-				contador = listaPersonas.size() - 1;
-				// colocarFormularioPersona(contador);
+				contador = data.length - 1;
+				funcionalidadBotones(contador);
 				break;
 			case "<":
 				System.out.println("pulsado " + textoBoton);
-				contador--;
-				// colocarFormularioPersona(contador);
+				if (contador > 0)
+					contador--;
+				System.out.println(contador);
+				if (contador >= 0)
+					funcionalidadBotones(contador);
+				else
+					JOptionPane.showMessageDialog(vista1.getFrame(),
+							"No hay valores por debajo o por encima de ese campo", "Error", JOptionPane.ERROR_MESSAGE);
+
 				break;
 			case "Primero":
 				System.out.println("pulsado " + textoBoton);
-				contador = 1;
-				// colocarFormularioPersona(contador);
+				contador = 0;
+				funcionalidadBotones(contador);
 				break;
 			default:
 				break;
@@ -221,11 +276,71 @@ public class Controlador implements ActionListener {
 		}
 	}
 
+	private int buscarPosicionEnArray() {
+		int i = 0;
+		int j = 0;
+		while (j < data.length) {
+			if ((int) data[j][0] == Integer.parseInt(vista1.getTextFieldId().getText())) {
+				i = j;
+
+				break;
+			}
+			// System.out.println(data[j][0]);
+			// System.out.println(vista1.getTextFieldId().getText() + "");
+			j++;
+
+		}
+
+		/*
+		 * int j = 0; for (int i = 0; i < data.length; i++) { if (data[i][0] ==
+		 * vista1.getTextFieldId().getText() + "") { System.out.println(i); j =
+		 * i; return j; break; } else {
+		 * 
+		 * // System.out.println(data[i][0]); //
+		 * System.out.println(vista1.getTextFieldId().getText());
+		 * 
+		 * }
+		 * 
+		 * } return j;
+		 */
+
+		return i;
+	}
+
+	private void limpiarFormulario() {
+		vista1.getTextFieldId().setText("");
+		vista1.getTextFieldNombre().setText("");
+		vista1.getTextFieldApellidos().setText("");
+		vista1.getTextFieldEmail().setText("");
+		vista1.getRdbtnHombre().setSelected(false);
+		vista1.getRdbtnMujer().setSelected(false);
+		;
+	}
+
+	private void funcionalidadBotones(int contador) {
+
+		vista1.getTextFieldId().setText(data[contador][0] + "");
+		vista1.getTextFieldNombre().setText((String) data[contador][1]);
+		vista1.getTextFieldApellidos().setText((String) data[contador][2]);
+		vista1.getTextFieldEmail().setText((String) data[contador][3]);
+		String genero = (String) data[contador][4];
+		if (genero.equals("Male")) {
+
+			vista1.getRdbtnHombre().setSelected(true);
+			;
+			;
+		} else {
+
+			vista1.getRdbtnMujer().setSelected(true);
+		}
+	}
+
 	private void borrarPersona() {
 		int id = Integer.parseInt(vista1.getTextFieldId().getText());
 		dao.borrarPersona(id);
 		cargarModeloDePersonas(dao.listarTodasLasPersonas());
 		setTabla();
+		limpiarFormulario();
 
 	}
 
@@ -239,30 +354,45 @@ public class Controlador implements ActionListener {
 		PersonaDTO persona = null;
 
 		// Configurando inserción de Id
-		if (vista1.getTextFieldId().getText().isEmpty() || !vista1.getTextFieldId().getText().matches("\\d{1,4}")) {
-			JOptionPane.showMessageDialog(vista1.getFrame(), "El id debe ser un número de 1 a 4 dígitos", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			/*
-			 * emergente = new JDialog(vista1.getFrame(), "Fallo de Id");
-			 * 
-			 * etiqueta = new
-			 * JLabel("Debes rellenar el Campo del Id con, de uno a cuatro dígitos numéricos"
-			 * );
-			 * 
-			 * emergente.getContentPane().add(etiqueta);
-			 * emergente.getContentPane().add(botonAceptar); emergente.pack();
-			 * emergente.setLocation(400, 600); emergente.setVisible(true);
-			 * botonAceptar.addActionListener(new ActionListener() { public void
-			 * actionPerformed(ActionEvent e) { emergente.setVisible(false);
-			 * emergente.dispose(); } });
-			 */
-		} else
-			id = vista1.getTextFieldId().getText();
 
+		// tratando error de insercción con el mismo id
+		try {
+
+			if (vista1.getTextFieldId().getText().isEmpty() || !vista1.getTextFieldId().getText().matches("\\d{1,4}")
+					|| comprobarSiExiste()) {
+				JOptionPane.showMessageDialog(vista1.getFrame(),
+						"El id debe ser un número de 1 a 4 dígitos y no existir en la base de datos", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				// System.out.println(comprobarSiExiste());
+				// System.out.println(vista1.getTextFieldId().getText());
+				/*
+				 * emergente = new JDialog(vista1.getFrame(), "Fallo de Id");
+				 * 
+				 * etiqueta = new
+				 * JLabel("Debes rellenar el Campo del Id con, de uno a cuatro dígitos numéricos"
+				 * );
+				 * 
+				 * emergente.getContentPane().add(etiqueta);
+				 * emergente.getContentPane().add(botonAceptar);
+				 * emergente.pack(); emergente.setLocation(400, 600);
+				 * emergente.setVisible(true);
+				 * botonAceptar.addActionListener(new ActionListener() { public
+				 * void actionPerformed(ActionEvent e) {
+				 * emergente.setVisible(false); emergente.dispose(); } });
+				 */
+			} else
+				id = vista1.getTextFieldId().getText();
+		} catch (Exception e) {
+			// System.out.println(comprobarSiExiste());
+			// System.out.println(vista1.getTextFieldId().getText());
+			JOptionPane.showMessageDialog(vista1.getFrame(), "La insercion del id ha fallado", "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
 		// Configurando inserción de Nombre
 		if (vista1.getTextFieldNombre().getText().isEmpty()
 				|| !vista1.getTextFieldNombre().getText().matches("\\w{2,20}")) {
-			JOptionPane.showMessageDialog(vista1.getFrame(), "El nombre debe ser tipo texto y de 2 a 20 caracteres",
+			JOptionPane.showMessageDialog(vista1.getFrame(),
+					"El nombre debe ser tipo texto y de 2 a 20 caracteres, sin espacios, no se admiten nombres compuestos",
 					"Error", JOptionPane.ERROR_MESSAGE);
 
 		} else
@@ -270,9 +400,10 @@ public class Controlador implements ActionListener {
 
 		// Configurando inserción de Apellidos
 		if (vista1.getTextFieldApellidos().getText().isEmpty()
-				|| !vista1.getTextFieldApellidos().getText().matches("\\w{2,30}")) {
+				|| !vista1.getTextFieldApellidos().getText().matches("\\w{2,15} \\w{2,15}")) {
 			JOptionPane.showMessageDialog(vista1.getFrame(),
-					"Los apellidos deben ser tipo texto y de 2 a 30 caracteres", "Error", JOptionPane.ERROR_MESSAGE);
+					"Los apellidos deben ser tipo texto y de 2 a 30 caracteres separados por un espacio", "Error",
+					JOptionPane.ERROR_MESSAGE);
 
 		} else
 			apellidos = vista1.getTextFieldApellidos().getText();
@@ -299,31 +430,65 @@ public class Controlador implements ActionListener {
 
 		try {
 			if (!(vista1.getTextFieldId().getText().isEmpty() || !vista1.getTextFieldId().getText().matches("\\d{1,4}")
-					|| vista1.getTextFieldNombre().getText().isEmpty()
+					|| comprobarSiExiste() || vista1.getTextFieldNombre().getText().isEmpty()
 					|| !vista1.getTextFieldNombre().getText().matches("\\w{2,20}")
 					|| vista1.getTextFieldApellidos().getText().isEmpty()
-					|| !vista1.getTextFieldApellidos().getText().matches("\\w{2,30}")
+					|| !vista1.getTextFieldApellidos().getText().matches("\\w{2,15} \\w{2,15}")
 					|| vista1.getTextFieldEmail().getText().isEmpty()
 					|| !vista1.getTextFieldEmail().getText()
 							.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 									+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
 					|| !vista1.getRdbtnHombre().isEnabled() && !vista1.getRdbtnMujer().isEnabled())) {
+				contador = 0;
+
 				persona = new PersonaDTO(Integer.parseInt(id), nombre, apellidos, email, genero);
 				System.out.println(persona);
+
 			} else {
 				System.out.println("No se ha podido insertar un carajo");
 				System.out.println(persona);
 
 			}
-			dao.insertarPersona(persona);
-			cargarModeloDePersonas(dao.listarTodasLasPersonas());
-			setTabla();
-			Logs.crearLog("OPERACIÓN CRUD: 'Ha sido insertado un registro con el id' " + persona.getId()
-					+ " --------- FECHA: " + LocalDate.now());
+			try {
+
+				dao.insertarPersona(persona);
+
+				JOptionPane.showMessageDialog(vista1.getFrame(),
+						"Persona con id: " + id + " ,se ha insertado correctamente", "Información",
+						JOptionPane.INFORMATION_MESSAGE);
+				cargarModeloDePersonas(dao.listarTodasLasPersonas());
+				setTabla();
+				Logs.crearLog("OPERACIÓN CRUD: 'Ha sido insertado un registro con el id' " + persona.getId()
+						+ " --------- FECHA: " + LocalDate.now());
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(vista1.getFrame(),
+						"Ya existe un campo con ese id o el id no está bien formado: un numero de 1 a 4 cifras",
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(vista1.getFrame(), "No se ha añadido nada", "Advertencia",
 					JOptionPane.WARNING_MESSAGE);
 		}
+
+	}
+
+	public boolean comprobarSiExiste() {
+		boolean respuesta = false;
+		for (int i = 0; i < data.length; i++) {
+			if (data[i][0] == vista1.getTextFieldId().getText() + "") {
+				respuesta = true;
+				System.out.println("SI EXISTE EN BD");
+				continue;
+
+			} else {
+
+				// System.out.println(data[i][0]);
+				// System.out.println(vista1.getTextFieldId().getText());
+
+			}
+		}
+
+		return respuesta;
 
 	}
 }
