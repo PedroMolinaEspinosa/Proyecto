@@ -16,8 +16,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import Logs.Logs;
 import controlador.Conexion;
-import modelo.DTO.Logs;
 import modelo.DTO.PersonaDTO;
 import vista.View;
 

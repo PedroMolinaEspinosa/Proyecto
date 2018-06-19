@@ -1,4 +1,4 @@
-package modelo.DTO;
+package Logs;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -1,7 +1,5 @@
 package vista;
 
-import java.awt.EventQueue;
-
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -17,11 +15,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import controlador.Controlador;
-
 public class View {
 
 	private JFrame frmBaseDeDatos;
+
+	public JFrame getFrmBaseDeDatos() {
+		return frmBaseDeDatos;
+	}
+
 	private JScrollPane scrollPane;
 	private JMenuItem mntmCargarCsv;
 	private JTextField textFieldId;
@@ -114,19 +115,6 @@ public class View {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					View window = new View();
-					new Controlador(window);
-					window.frmBaseDeDatos.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.

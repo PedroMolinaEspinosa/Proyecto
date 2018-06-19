@@ -19,8 +19,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import Logs.Logs;
 import modelo.DAO.PersonaDAOImplementada;
-import modelo.DTO.Logs;
 import modelo.DTO.PersonaDTO;
 import vista.View;
 
@@ -188,7 +188,8 @@ public class Controlador implements ActionListener {
 		data3 = new Object[200][5];
 		data4 = new Object[200][5];
 		data5 = new Object[200][5];
-		data6 = new Object[data.length - 1000][5];
+		if (data.length > 1000)
+			data6 = new Object[data.length - 1000][5];
 		int j = 0;
 
 		for (int i = 0; i < 200; i++) {
@@ -231,8 +232,12 @@ public class Controlador implements ActionListener {
 			j++;
 		}
 		j = 0;
-
-		for (int i = 800; i < 1000; i++) {
+		int retro = 0;
+		if (data.length < 1000)
+			retro = data.length - 800;
+		else
+			retro = 200;
+		for (int i = 800; i < retro; i++) {
 			data5[j][0] = data[i][0];
 			data5[j][1] = data[i][1];
 			data5[j][2] = data[i][2];
@@ -468,7 +473,8 @@ public class Controlador implements ActionListener {
 
 	private void actualizarPersona() {
 
-		if (!(vista1.getTextFieldId().getText().isEmpty() || !vista1.getTextFieldId().getText().matches("\\d{1,4}")
+		if (comprobarSiExiste() && !(vista1.getTextFieldId().getText().isEmpty()
+				|| !vista1.getTextFieldId().getText().matches("\\d{1,4}")
 				|| vista1.getTextFieldNombre().getText().isEmpty()
 				|| !vista1.getTextFieldNombre().getText().matches("\\w{2,20}")
 				|| vista1.getTextFieldApellidos().getText().isEmpty()
@@ -488,11 +494,12 @@ public class Controlador implements ActionListener {
 					vista1.getTextFieldEmail().getText(), genero);
 
 			cargarModeloDePersonas(dao.listarTodasLasPersonas());
+			llenarDatasPaginacion();
 			setTabla(data1);
 		} else
 			JOptionPane.showMessageDialog(vista1.getFrame(),
 					"Uno de los campos no está bien formado: \n"
-							+ "		> El id debe ser un número de 1 a 4 dígitos\n"
+							+ "		> El id debe ser un número de 1 a 4 dígitos y que exista en la base de datos\n"
 							+ "		> El nombre debe ser tipo texto y de 2 a 20 caracteres, sin espacios, no se admiten nombres compuestos\n"
 							+ "		> Los apellidos deben ser tipo texto y de 2 a 30 caracteres separados por un espacio\n"
 							+ "		> El email no está bien formado; Ejemplo: \n" + "info@iesvirgendelcarmen.com\n"
@@ -504,6 +511,7 @@ public class Controlador implements ActionListener {
 		int id = Integer.parseInt(vista1.getTextFieldId().getText());
 		dao.borrarPersona(id);
 		cargarModeloDePersonas(dao.listarTodasLasPersonas());
+		llenarDatasPaginacion();
 		setTabla(data1);
 		limpiarFormulario();
 
@@ -622,6 +630,7 @@ public class Controlador implements ActionListener {
 						"Persona con id: " + id + " ,se ha insertado correctamente", "Información",
 						JOptionPane.INFORMATION_MESSAGE);
 				cargarModeloDePersonas(dao.listarTodasLasPersonas());
+				llenarDatasPaginacion();
 				setTabla(data1);
 				Logs.crearLog("OPERACIÓN CRUD: 'Ha sido insertado un registro con el id' " + persona.getId()
 						+ " --------- FECHA: " + LocalDate.now());
