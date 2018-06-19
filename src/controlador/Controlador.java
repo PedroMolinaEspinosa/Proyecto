@@ -32,6 +32,14 @@ public class Controlador implements ActionListener {
 	private String path;
 	private int contador = 0;
 	static Object[][] data;
+	static Object[][] data1;
+	static Object[][] data2;
+	static Object[][] data3;
+	static Object[][] data4;
+	static Object[][] data5;
+	static Object[][] data6;
+	int paginacionTabla = 1;
+
 	JDialog emergente;
 	JLabel etiqueta;
 	static String[] titulos = new String[] { "Id", "Nombre", "Apellidos", "Email", "genero" };
@@ -59,6 +67,8 @@ public class Controlador implements ActionListener {
 		vista1.getButtonMas().addActionListener(escuchador);
 		vista1.getBtnUltimo().addActionListener(escuchador);
 		vista1.getBtnActualizar().addActionListener(escuchador);
+		vista1.getBtnPginaAnterior().addActionListener(escuchador);
+		vista1.getBtnSiguientePg().addActionListener(escuchador);
 
 		/*
 		 * vista.getBtnAgregar().addActionListener(escuchador);
@@ -101,7 +111,8 @@ public class Controlador implements ActionListener {
 					cargarModeloDePersonas(dao.listarTodasLasPersonas());
 
 				}
-				setTabla();
+				llenarDatasPaginacion();
+				setTabla(data1);
 				vista1.getBtnInsertar().setEnabled(true);
 
 				vista1.getRdbtnMujer().setEnabled(true);
@@ -117,6 +128,8 @@ public class Controlador implements ActionListener {
 				vista1.getButtonMenos().setEnabled(true);
 				vista1.getButtonMas().setEnabled(true);
 				vista1.getBtnUltimo().setEnabled(true);
+				vista1.getBtnPginaAnterior().setEnabled(true);
+				vista1.getBtnSiguientePg().setEnabled(true);
 
 				vista1.getMntmCargarCsv().setEnabled(false);
 				limpiarFormulario();
@@ -161,12 +174,83 @@ public class Controlador implements ActionListener {
 		// System.out.println(data.length);
 	}
 
-	public void setTabla() {
-		tmpersona = new TMPersona(titulos, data);
+	public void setTabla(Object data) {
+		tmpersona = new TMPersona(titulos, (Object[][]) data);
 		table = new JTable(tmpersona);
 
 		vista1.getScrollPane().setViewportView(table);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
+
+	private void llenarDatasPaginacion() {
+		data1 = new Object[200][5];
+		data2 = new Object[200][5];
+		data3 = new Object[200][5];
+		data4 = new Object[200][5];
+		data5 = new Object[200][5];
+		data6 = new Object[data.length - 1000][5];
+		int j = 0;
+
+		for (int i = 0; i < 200; i++) {
+			data1[i][0] = data[i][0];
+			data1[i][1] = data[i][1];
+			data1[i][2] = data[i][2];
+			data1[i][3] = data[i][3];
+			data1[i][4] = data[i][4];
+
+		}
+
+		for (int i = 200; i < 400; i++) {
+
+			data2[j][0] = data[i][0];
+			data2[j][1] = data[i][1];
+			data2[j][2] = data[i][2];
+			data2[j][3] = data[i][3];
+			data2[j][4] = data[i][4];
+			j++;
+
+		}
+		j = 0;
+		for (int i = 400; i < 600; i++) {
+			data3[j][0] = data[i][0];
+			data3[j][1] = data[i][1];
+			data3[j][2] = data[i][2];
+			data3[j][3] = data[i][3];
+			data3[j][4] = data[i][4];
+			j++;
+
+		}
+		j = 0;
+
+		for (int i = 600; i < 800; i++) {
+			data4[j][0] = data[i][0];
+			data4[j][1] = data[i][1];
+			data4[j][2] = data[i][2];
+			data4[j][3] = data[i][3];
+			data4[j][4] = data[i][4];
+			j++;
+		}
+		j = 0;
+
+		for (int i = 800; i < 1000; i++) {
+			data5[j][0] = data[i][0];
+			data5[j][1] = data[i][1];
+			data5[j][2] = data[i][2];
+			data5[j][3] = data[i][3];
+			data5[j][4] = data[i][4];
+			j++;
+		}
+		j = 0;
+
+		if (data.length > 1000)
+			for (int i = 1000; i < data.length; i++) {
+				data6[j][0] = data[i][0];
+				data6[j][1] = data[i][1];
+				data6[j][2] = data[i][2];
+				data6[j][3] = data[i][3];
+				data6[j][4] = data[i][4];
+				j++;
+			}
 	}
 
 	public void cargarFormulario() {
@@ -180,16 +264,14 @@ public class Controlador implements ActionListener {
 		vista1.getTextFieldNombre().setText(nombre);
 		vista1.getTextFieldApellidos().setText(apellidos);
 		vista1.getTextFieldEmail().setText(email);
-		System.out.println((String) data[0][4]);
-		System.out.println(genero + " Antes del if y else");
+
 		if (genero.equals("Male")) {
-			System.out.println(genero + " Dentro del if");
 
 			vista1.getRdbtnHombre().setSelected(true);
 		} else {
 
 			vista1.getRdbtnMujer().setSelected(true);
-			System.out.println(genero + " Dentro del else");
+
 		}
 	}
 
@@ -204,7 +286,7 @@ public class Controlador implements ActionListener {
 	*/
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+
 		if (e.getActionCommand().equals("cargar CSV")) {
 			lanzarEleccionFichero();
 
@@ -219,6 +301,41 @@ public class Controlador implements ActionListener {
 		}
 		if (e.getActionCommand().equals("Actualizar")) {
 			actualizarPersona();
+		}
+
+		if (e.getActionCommand().equals("Siguiente página")) {
+			paginacionTabla++;
+
+			if (paginacionTabla == 2)
+				setTabla(data2);
+			if (paginacionTabla == 3)
+				setTabla(data3);
+			if (paginacionTabla == 4)
+				setTabla(data4);
+			if (paginacionTabla == 5)
+				setTabla(data5);
+			if (paginacionTabla == 6)
+				setTabla(data6);
+			if (paginacionTabla == 7)
+				paginacionTabla = 6;
+		}
+
+		if (e.getActionCommand().equals("Página anterior")) {
+
+			paginacionTabla--;
+
+			if (paginacionTabla == 1)
+				setTabla(data1);
+			if (paginacionTabla == 2)
+				setTabla(data2);
+			if (paginacionTabla == 3)
+				setTabla(data3);
+			if (paginacionTabla == 4)
+				setTabla(data4);
+			if (paginacionTabla == 5)
+				setTabla(data5);
+			if (paginacionTabla == 0)
+				paginacionTabla = 1;
 		}
 
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -371,7 +488,7 @@ public class Controlador implements ActionListener {
 					vista1.getTextFieldEmail().getText(), genero);
 
 			cargarModeloDePersonas(dao.listarTodasLasPersonas());
-			setTabla();
+			setTabla(data1);
 		} else
 			JOptionPane.showMessageDialog(vista1.getFrame(),
 					"Uno de los campos no está bien formado: \n"
@@ -387,7 +504,7 @@ public class Controlador implements ActionListener {
 		int id = Integer.parseInt(vista1.getTextFieldId().getText());
 		dao.borrarPersona(id);
 		cargarModeloDePersonas(dao.listarTodasLasPersonas());
-		setTabla();
+		setTabla(data1);
 		limpiarFormulario();
 
 	}
@@ -505,7 +622,7 @@ public class Controlador implements ActionListener {
 						"Persona con id: " + id + " ,se ha insertado correctamente", "Información",
 						JOptionPane.INFORMATION_MESSAGE);
 				cargarModeloDePersonas(dao.listarTodasLasPersonas());
-				setTabla();
+				setTabla(data1);
 				Logs.crearLog("OPERACIÓN CRUD: 'Ha sido insertado un registro con el id' " + persona.getId()
 						+ " --------- FECHA: " + LocalDate.now());
 			} catch (Exception e) {

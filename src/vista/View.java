@@ -38,7 +38,7 @@ public class View {
 	private JButton btnUltimo;
 	private JButton btnActualizar;
 	private JButton btnSiguientePg;
-	private JButton btnPginaSiguiente;
+	private JButton btnPginaAnterior;
 
 	// --------------------------------------GETTERS Y
 	// SETTERS--------------------------------------------------------------
@@ -202,11 +202,11 @@ public class View {
 		btnActualizar = new JButton("Actualizar");
 		btnActualizar.setEnabled(false);
 
-		btnSiguientePg = new JButton("Siguiente P\u00E1gina");
+		btnSiguientePg = new JButton("Siguiente p\u00E1gina");
 		btnSiguientePg.setEnabled(false);
 
-		btnPginaSiguiente = new JButton("P\u00E1gina siguiente");
-		btnPginaSiguiente.setEnabled(false);
+		btnPginaAnterior = new JButton("P\u00E1gina anterior");
+		btnPginaAnterior.setEnabled(false);
 		GroupLayout groupLayout = new GroupLayout(frmBaseDeDatos.getContentPane());
 		groupLayout
 				.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -292,7 +292,7 @@ public class View {
 																								GroupLayout.DEFAULT_SIZE,
 																								114, Short.MAX_VALUE))))
 																.addComponent(btnPrimero)))))
-								.addGroup(groupLayout.createSequentialGroup().addGap(62).addComponent(btnPginaSiguiente)
+								.addGroup(groupLayout.createSequentialGroup().addGap(62).addComponent(btnPginaAnterior)
 										.addGap(110).addComponent(btnSiguientePg)))
 								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
@@ -325,7 +325,7 @@ public class View {
 								.addComponent(btnBorrar).addComponent(btnActualizar)))
 						.addGroup(groupLayout.createSequentialGroup().addContainerGap().addComponent(scrollPane,
 								GroupLayout.PREFERRED_SIZE, 459, GroupLayout.PREFERRED_SIZE)))
-				.addGap(18).addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(btnPginaSiguiente)
+				.addGap(18).addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(btnPginaAnterior)
 						.addComponent(btnSiguientePg))
 				.addContainerGap(95, Short.MAX_VALUE)));
 		frmBaseDeDatos.getContentPane().setLayout(groupLayout);
@@ -338,6 +338,14 @@ public class View {
 
 		mntmCargarCsv = new JMenuItem("cargar CSV");
 		mnFile.add(mntmCargarCsv);
+	}
+
+	public JButton getBtnSiguientePg() {
+		return btnSiguientePg;
+	}
+
+	public JButton getBtnPginaAnterior() {
+		return btnPginaAnterior;
 	}
 
 	public JButton getBtnActualizar() {
