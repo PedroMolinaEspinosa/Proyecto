@@ -16,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import modelo.DAO.PersonaDAOImplementada;
 import modelo.DTO.Logs;
@@ -56,6 +58,7 @@ public class Controlador implements ActionListener {
 		vista1.getButtonMenos().addActionListener(escuchador);
 		vista1.getButtonMas().addActionListener(escuchador);
 		vista1.getBtnUltimo().addActionListener(escuchador);
+		vista1.getBtnActualizar().addActionListener(escuchador);
 
 		/*
 		 * vista.getBtnAgregar().addActionListener(escuchador);
@@ -70,30 +73,20 @@ public class Controlador implements ActionListener {
 		 */
 	}
 
-	@SuppressWarnings("unused")
-	private void jTable1MouseClicked(java.awt.event.MouseEvent e) {
-		int index = table.getSelectedRow();
-		System.out.println("Utilizando método del click");
-
-		vista1.getTextFieldId().setText(tmpersona.getValueAt(index, 0).toString());
-		vista1.getTextFieldNombre().setText(tmpersona.getValueAt(index, 1).toString());
-		vista1.getTextFieldApellidos().setText(tmpersona.getValueAt(index, 2).toString());
-		vista1.getTextFieldEmail().setText(tmpersona.getValueAt(index, 3).toString());
-		if (tmpersona.getValueAt(index, 4).toString() == "Male") {
-			vista1.getRdbtnHombre().setEnabled(true);
-		} else
-			vista1.getRdbtnMujer().setEnabled(true);
-
-	}
-
 	private void lanzarEleccionFichero() {
 
 		JFileChooser jFileChooser = new JFileChooser(".");
 		int resultado = jFileChooser.showOpenDialog(vista1.getFrame());
 		if (resultado == jFileChooser.APPROVE_OPTION) {
 			path = jFileChooser.getSelectedFile().getPath();
-			listaPersonas = dao.cargarCSV(path);
+			try {
 
+				listaPersonas = dao.cargarCSV(path);
+
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(vista1.getFrame(), "El archivo no es csv", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
 			String sql = "SELECT * FROM persona;";
 			try (Statement st = conexion.createStatement();) {
 				ResultSet rs = st.executeQuery(sql);
@@ -114,7 +107,7 @@ public class Controlador implements ActionListener {
 				vista1.getRdbtnMujer().setEnabled(true);
 				vista1.getRdbtnHombre().setEnabled(true);
 				vista1.getRdbtnHombre().setSelected(true);
-				;
+				vista1.getBtnActualizar().setEnabled(true);
 				vista1.getTextFieldApellidos().setEnabled(true);
 				vista1.getTextFieldId().setEnabled(true);
 				vista1.getTextFieldNombre().setEnabled(true);
@@ -128,6 +121,7 @@ public class Controlador implements ActionListener {
 				vista1.getMntmCargarCsv().setEnabled(false);
 				limpiarFormulario();
 				cargarFormulario();
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -223,7 +217,27 @@ public class Controlador implements ActionListener {
 			borrarPersona();
 
 		}
+		if (e.getActionCommand().equals("Actualizar")) {
+			actualizarPersona();
+		}
 
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				// do some actions here, for example
+
+				// print first column value from selected row
+				vista1.getTextFieldId().setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+				vista1.getTextFieldNombre().setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+				vista1.getTextFieldApellidos().setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+				vista1.getTextFieldEmail().setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+
+				if (table.getValueAt(table.getSelectedRow(), 4).toString().equals("Male")) {
+					vista1.getRdbtnHombre().setSelected(true);
+				} else
+					vista1.getRdbtnMujer().setSelected(true);
+			}
+
+		});
 		if (e.getSource().getClass() == JButton.class) {
 			JButton jButton = (JButton) e.getSource();
 			String textoBoton = jButton.getText();
@@ -238,7 +252,7 @@ public class Controlador implements ActionListener {
 
 			switch (textoBoton) {
 			case ">":
-				System.out.println("pulsado " + textoBoton);
+
 				if (contador < data.length - 1)
 					contador++;
 				// System.out.println(contador);
@@ -248,12 +262,12 @@ public class Controlador implements ActionListener {
 				// colocarFormularioPersona(contador);
 				break;
 			case "Ultimo":
-				System.out.println("pulsado " + textoBoton);
+
 				contador = data.length - 1;
 				funcionalidadBotones(contador);
 				break;
 			case "<":
-				System.out.println("pulsado " + textoBoton);
+
 				if (contador > 0)
 					contador--;
 				System.out.println(contador);
@@ -265,7 +279,7 @@ public class Controlador implements ActionListener {
 
 				break;
 			case "Primero":
-				System.out.println("pulsado " + textoBoton);
+
 				contador = 0;
 				funcionalidadBotones(contador);
 				break;
@@ -333,6 +347,40 @@ public class Controlador implements ActionListener {
 
 			vista1.getRdbtnMujer().setSelected(true);
 		}
+	}
+
+	private void actualizarPersona() {
+
+		if (!(vista1.getTextFieldId().getText().isEmpty() || !vista1.getTextFieldId().getText().matches("\\d{1,4}")
+				|| vista1.getTextFieldNombre().getText().isEmpty()
+				|| !vista1.getTextFieldNombre().getText().matches("\\w{2,20}")
+				|| vista1.getTextFieldApellidos().getText().isEmpty()
+				|| !vista1.getTextFieldApellidos().getText().matches("\\w{2,15} \\w{2,15}")
+				|| vista1.getTextFieldEmail().getText().isEmpty()
+				|| !vista1.getTextFieldEmail().getText().matches(
+						"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+				|| !vista1.getRdbtnHombre().isEnabled() && !vista1.getRdbtnMujer().isEnabled())) {
+			String genero = null;
+			if (vista1.getRdbtnHombre().isSelected())
+				genero = "Male";
+			else
+				genero = "Female";
+
+			dao.actualizarPersona(Integer.parseInt(vista1.getTextFieldId().getText()),
+					vista1.getTextFieldNombre().getText(), vista1.getTextFieldApellidos().getText(),
+					vista1.getTextFieldEmail().getText(), genero);
+
+			cargarModeloDePersonas(dao.listarTodasLasPersonas());
+			setTabla();
+		} else
+			JOptionPane.showMessageDialog(vista1.getFrame(),
+					"Uno de los campos no está bien formado: \n"
+							+ "		> El id debe ser un número de 1 a 4 dígitos\n"
+							+ "		> El nombre debe ser tipo texto y de 2 a 20 caracteres, sin espacios, no se admiten nombres compuestos\n"
+							+ "		> Los apellidos deben ser tipo texto y de 2 a 30 caracteres separados por un espacio\n"
+							+ "		> El email no está bien formado; Ejemplo: \n" + "info@iesvirgendelcarmen.com\n"
+							+ "		> Debes marcar una de las dos opciones de sexo\n",
+					"Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void borrarPersona() {

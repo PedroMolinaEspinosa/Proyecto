@@ -36,6 +36,9 @@ public class View {
 	private JButton buttonMenos;
 	private JButton buttonMas;
 	private JButton btnUltimo;
+	private JButton btnActualizar;
+	private JButton btnSiguientePg;
+	private JButton btnPginaSiguiente;
 
 	// --------------------------------------GETTERS Y
 	// SETTERS--------------------------------------------------------------
@@ -137,6 +140,7 @@ public class View {
 	 */
 	private void initialize() {
 		frmBaseDeDatos = new JFrame();
+		frmBaseDeDatos.setResizable(false);
 		frmBaseDeDatos.setBounds(100, 100, 818, 656);
 		frmBaseDeDatos.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmBaseDeDatos.setTitle("Base de datos de Personas");
@@ -194,40 +198,103 @@ public class View {
 
 		btnUltimo = new JButton("Ultimo");
 		btnUltimo.setEnabled(false);
+
+		btnActualizar = new JButton("Actualizar");
+		btnActualizar.setEnabled(false);
+
+		btnSiguientePg = new JButton("Siguiente P\u00E1gina");
+		btnSiguientePg.setEnabled(false);
+
+		btnPginaSiguiente = new JButton("P\u00E1gina siguiente");
+		btnPginaSiguiente.setEnabled(false);
 		GroupLayout groupLayout = new GroupLayout(frmBaseDeDatos.getContentPane());
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addContainerGap().addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 429,
-						GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup().addGap(60)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(btnInsertar)
-										.addGroup(groupLayout.createSequentialGroup().addComponent(rdbtnHombre)
-												.addGap(35).addComponent(rdbtnMujer))))
-						.addGroup(groupLayout.createSequentialGroup().addGap(18)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addGroup(groupLayout.createSequentialGroup()
-												.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-														.addComponent(lblId).addComponent(lblNewLabel)
-														.addComponent(lblApellidos).addComponent(lblEmail))
-												.addGap(46)
-												.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-														.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-																.addComponent(btnBorrar).addComponent(
-																		textFieldEmail, GroupLayout.PREFERRED_SIZE,
-																		202, GroupLayout.PREFERRED_SIZE))
-														.addGroup(groupLayout
-																.createParallelGroup(Alignment.TRAILING, false)
-																.addComponent(textFieldApellidos, Alignment.LEADING)
-																.addComponent(textFieldNombre, Alignment.LEADING)
-																.addComponent(textFieldId, Alignment.LEADING,
-																		GroupLayout.DEFAULT_SIZE, 114,
-																		Short.MAX_VALUE))))
-										.addGroup(
-												groupLayout.createSequentialGroup().addGap(16).addComponent(btnPrimero)
-														.addGap(26).addComponent(buttonMenos).addGap(30)
-														.addComponent(buttonMas).addGap(27).addComponent(btnUltimo)))))
-				.addContainerGap(34, Short.MAX_VALUE)));
+		groupLayout
+				.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup().addGroup(groupLayout
+								.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup()
+										.addContainerGap().addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 429,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(groupLayout
+												.createParallelGroup(Alignment.LEADING)
+												.addGroup(groupLayout
+														.createSequentialGroup().addGap(60).addComponent(
+																rdbtnHombre)
+														.addGap(35).addComponent(rdbtnMujer))
+												.addGroup(groupLayout.createSequentialGroup()
+														.addGap(34).addGroup(groupLayout
+																.createParallelGroup(Alignment.LEADING, false)
+																.addGroup(groupLayout.createSequentialGroup()
+																		.addGroup(groupLayout
+																				.createParallelGroup(Alignment.LEADING)
+																				.addComponent(lblId)
+																				.addComponent(lblNewLabel)
+																				.addComponent(lblApellidos)
+																				.addComponent(lblEmail)
+																				.addComponent(btnInsertar))
+																		.addPreferredGap(ComponentPlacement.RELATED)
+																		.addGroup(groupLayout
+																				.createParallelGroup(Alignment.LEADING)
+																				.addGroup(groupLayout
+																						.createSequentialGroup()
+																						.addGroup(groupLayout
+																								.createParallelGroup(
+																										Alignment.LEADING)
+																								.addComponent(
+																										textFieldEmail,
+																										GroupLayout.PREFERRED_SIZE,
+																										202,
+																										GroupLayout.PREFERRED_SIZE)
+																								.addGroup(groupLayout
+																										.createSequentialGroup()
+																										.addGap(27)
+																										.addGroup(
+																												groupLayout
+																														.createParallelGroup(
+																																Alignment.LEADING)
+																														.addGroup(
+																																groupLayout
+																																		.createSequentialGroup()
+																																		.addComponent(
+																																				buttonMenos)
+																																		.addPreferredGap(
+																																				ComponentPlacement.RELATED,
+																																				GroupLayout.DEFAULT_SIZE,
+																																				Short.MAX_VALUE)
+																																		.addComponent(
+																																				buttonMas))
+																														.addComponent(
+																																btnActualizar,
+																																GroupLayout.DEFAULT_SIZE,
+																																88,
+																																Short.MAX_VALUE))
+																										.addGap(33)
+																										.addGroup(
+																												groupLayout
+																														.createParallelGroup(
+																																Alignment.LEADING)
+																														.addComponent(
+																																btnUltimo)
+																														.addComponent(
+																																btnBorrar))))
+																						.addGap(63))
+																				.addGroup(groupLayout
+																						.createParallelGroup(
+																								Alignment.TRAILING,
+																								false)
+																						.addComponent(
+																								textFieldApellidos,
+																								Alignment.LEADING)
+																						.addComponent(textFieldNombre,
+																								Alignment.LEADING)
+																						.addComponent(textFieldId,
+																								Alignment.LEADING,
+																								GroupLayout.DEFAULT_SIZE,
+																								114, Short.MAX_VALUE))))
+																.addComponent(btnPrimero)))))
+								.addGroup(groupLayout.createSequentialGroup().addGap(62).addComponent(btnPginaSiguiente)
+										.addGap(110).addComponent(btnSiguientePg)))
+								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
 				.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
@@ -255,10 +322,12 @@ public class View {
 								.addComponent(buttonMenos).addComponent(buttonMas).addComponent(btnUltimo))
 						.addGap(28)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnInsertar)
-								.addComponent(btnBorrar)))
+								.addComponent(btnBorrar).addComponent(btnActualizar)))
 						.addGroup(groupLayout.createSequentialGroup().addContainerGap().addComponent(scrollPane,
-								GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)))
-				.addContainerGap()));
+								GroupLayout.PREFERRED_SIZE, 459, GroupLayout.PREFERRED_SIZE)))
+				.addGap(18).addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(btnPginaSiguiente)
+						.addComponent(btnSiguientePg))
+				.addContainerGap(95, Short.MAX_VALUE)));
 		frmBaseDeDatos.getContentPane().setLayout(groupLayout);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -269,6 +338,14 @@ public class View {
 
 		mntmCargarCsv = new JMenuItem("cargar CSV");
 		mnFile.add(mntmCargarCsv);
+	}
+
+	public JButton getBtnActualizar() {
+		return btnActualizar;
+	}
+
+	public void setBtnActualizar(JButton btnActualizar) {
+		this.btnActualizar = btnActualizar;
 	}
 
 	public JButton getBtnPrimero() {

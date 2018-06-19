@@ -14,7 +14,7 @@ public interface PersonaDAO {
 
 	boolean borrarPersona(int id);
 
-	boolean actualizarEmailPersona(int id, String email);
+	boolean actualizarPersona(int id, String nombre, String apellidos, String email, String genero);
 
 	boolean insertarPersona(PersonaDTO persona);
 

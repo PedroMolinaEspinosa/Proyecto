@@ -67,13 +67,16 @@ public class PersonaDAOImplementada implements PersonaDAO {
 	}
 
 	@Override
-	public boolean actualizarEmailPersona(int id, String email) {
+	public boolean actualizarPersona(int id, String nombre, String apellidos, String email, String genero) {
 		int updates = 0;
 		// UPDATE libro SET categoria='Seguridad' WHERE nombre = 'Santa Tecla';
-		String sql = "UPDATE persona SET email = ? WHERE id = ?;";
+		String sql = "UPDATE persona SET nombre = ?, apellidos = ?, email = ?, genero = ? WHERE id = ?;";
 		try (PreparedStatement preparedStatement = conexion.prepareStatement(sql);) {
-			preparedStatement.setString(1, email);
-			preparedStatement.setInt(2, id);
+			preparedStatement.setString(1, nombre);
+			preparedStatement.setString(2, apellidos);
+			preparedStatement.setString(3, email);
+			preparedStatement.setString(4, genero);
+			preparedStatement.setInt(5, id);
 			updates = preparedStatement.executeUpdate();
 			Logs.crearLog("OPERACIÓN CRUD: 'Ha sido actualizado el registro con el id' " + id + " --------- FECHA: "
 					+ LocalDate.now());
@@ -144,4 +147,5 @@ public class PersonaDAOImplementada implements PersonaDAO {
 		return listaPersonas;
 
 	}
+
 }
